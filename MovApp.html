@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Movies - Your Ultimate Streaming Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark blue-gray */
+        }
+        /* Custom scrollbar for horizontal movie lists */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hero-gradient {
+            background-image: linear-gradient(to right, rgba(17, 24, 39, 1) 20%, rgba(17, 24, 39, 0.7) 50%, rgba(17, 24, 39, 0) 100%);
+        }
+        .movie-card:hover .poster-overlay {
+            opacity: 1;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.75);
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-gray-900 bg-opacity-80 backdrop-blur-md transition-all duration-300">
+        <div class="flex items-center space-x-4">
+            <svg class="h-8 w-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.55a2 2 0 01.95 1.66V13a2 2 0 01-2 2h-1.5l-3.5-4.5V10zM4.45 14a2 2 0 01-.95-1.66V11a2 2 0 012-2h1.5l3.5 4.5V14zM10 4v16m4-16v16" />
+            </svg>
+            <h1 class="text-2xl font-bold tracking-wider">GEMINI MOVIES</h1>
+        </div>
+        <nav class="hidden md:flex items-center space-x-6 text-gray-300">
+            <a href="#" class="hover:text-white transition">Home</a>
+            <a href="#" class="hover:text-white transition">TV Shows</a>
+            <a href="#" class="hover:text-white transition">Movies</a>
+            <a href="#" class="hover:text-white transition">New & Popular</a>
+        </nav>
+        <div class="flex items-center space-x-4">
+            <svg class="h-6 w-6 cursor-pointer hover:text-white transition" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <img src="https://placehold.co/40x40/60a5fa/ffffff?text=U" alt="User Avatar" class="rounded-full h-8 w-8 cursor-pointer">
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero-section" class="relative h-screen flex items-center justify-start text-left transition-all duration-500">
+            <div id="hero-background" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out"></div>
+            <div class="absolute inset-0 hero-gradient"></div>
+            <div class="relative z-10 p-8 md:p-16 lg:p-24 max-w-2xl">
+                <h2 id="hero-title" class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Loading Movie...</h2>
+                <p id="hero-overview" class="text-gray-300 mb-8 text-lg leading-relaxed line-clamp-3">Loading overview...</p>
+                <div class="flex space-x-4">
+                    <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full flex items-center space-x-2 transition transform hover:scale-105 shadow-lg">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 3.25a.75.75 0 01.75.75v5.5a.75.75 0 01-1.5 0V4A.75.75 0 0110 3.25z" />
+                            <path fill-rule="evenodd" d="M8.75 3a.75.75 0 00-1.5 0v2.5h-1.5a.75.75 0 000 1.5h1.5v2.5a.75.75 0 001.5 0V7h1.5a.75.75 0 000-1.5h-1.5V3zM10 18a8 8 0 100-16 8 8 0 000 16zm0-1.5a6.5 6.5 0 100-13 6.5 6.5 0 000 13z" clip-rule="evenodd" />
+                        </svg>
+                         <span>Play Now</span>
+                    </button>
+                    <button class="bg-gray-700 bg-opacity-70 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-full flex items-center space-x-2 transition transform hover:scale-105 shadow-lg">
+                         <span>More Info</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movie Rows Section -->
+        <section id="movie-rows" class="py-12 px-4 md:px-8 lg:px-16 space-y-12">
+            <!-- This content will be populated by JavaScript -->
+        </section>
+    </main>
+
+    <!-- Movie Details Modal -->
+    <div id="movie-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div id="modal-content" class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Close button -->
+            <button id="modal-close-btn" class="absolute top-3 right-3 text-gray-400 hover:text-white z-20">
+                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <!-- Modal Body -->
+            <div id="modal-body">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 border-t border-gray-800 mt-12">
+        <p class="text-gray-500">&copy; 2024 Gemini Movies. All Rights Reserved. Coded with ❤️.</p>
+        <p class="text-gray-600 text-sm mt-2">This site is for demonstration purposes only and uses the TMDb API but is not endorsed or certified by TMDb.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURATION ---
+            // IMPORTANT: Replace with your own TMDb API key.
+            // You can get a free key from https://www.themoviedb.org/signup
+            const API_KEY = 'YOUR_TMDB_API_KEY'; 
+
+            const BASE_URL = 'https://api.themoviedb.org/3';
+            const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
+
+            // Check if API key is provided
+            if (API_KEY === 'YOUR_TMDB_API_KEY' || !API_KEY) {
+                const mainContent = document.querySelector('main');
+                mainContent.innerHTML = `
+                    <div class="h-screen flex flex-col items-center justify-center text-center p-8">
+                        <h1 class="text-3xl font-bold text-red-500 mb-4">API Key Missing</h1>
+                        <p class="text-lg text-gray-300">Please replace 'YOUR_TMDB_API_KEY' in the JavaScript section of this file with your actual TMDb API key.</p>
+                        <a href="https://www.themoviedb.org/signup" target="_blank" class="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Get a Free API Key</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // --- API ENDPOINTS ---
+            const endpoints = [
+                { id: 'trending-movies', title: 'Trending Now', url: `${BASE_URL}/trending/movie/week?api_key=${API_KEY}` },
+                { id: 'top-rated-movies', title: 'Top Rated Movies', url: `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US` },
+                { id: 'upcoming-movies', title: 'Upcoming Movies', url: `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US` },
+                { id: 'popular-tv', title: 'Popular TV Shows', url: `${BASE_URL}/tv/popular?api_key=${API_KEY}&language=en-US` }
+            ];
+
+            // --- DOM ELEMENTS ---
+            const heroSection = document.getElementById('hero-section');
+            const heroBackground = document.getElementById('hero-background');
+            const heroTitle = document.getElementById('hero-title');
+            const heroOverview = document.getElementById('hero-overview');
+            const movieRowsContainer = document.getElementById('movie-rows');
+            const modal = document.getElementById('movie-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            // --- CORE FUNCTIONS ---
+
+            /**
+             * Fetches data from a URL with error handling.
+             * @param {string} url - The URL to fetch data from.
+             * @returns {Promise<object>} - The JSON response.
+             */
+            async function fetchData(url) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error("Failed to fetch data:", error);
+                    return null;
+                }
+            }
+
+            /**
+             * Updates the hero section with a featured movie.
+             * @param {object} featuredMovie - The movie object to feature.
+             */
+            function updateHeroSection(featuredMovie) {
+                if (!featuredMovie || !featuredMovie.backdrop_path) return;
+                const backdropUrl = `${IMAGE_BASE_URL}original${featuredMovie.backdrop_path}`;
+                heroBackground.style.backgroundImage = `url('${backdropUrl}')`;
+                heroTitle.textContent = featuredMovie.title || featuredMovie.name;
+                heroOverview.textContent = featuredMovie.overview;
+            }
+            
+            /**
+             * Creates an HTML element for a movie/TV show card.
+             * @param {object} item - The movie or TV show object.
+             * @returns {string} - The HTML string for the card.
+             */
+            function createMovieCard(item) {
+                const posterPath = item.poster_path ? `${IMAGE_BASE_URL}w500${item.poster_path}` : 'https://placehold.co/500x750/1f2937/ffffff?text=No+Image';
+                const title = item.title || item.name;
+                return `
+                    <div class="movie-card flex-shrink-0 w-48 cursor-pointer group transform hover:scale-105 transition-transform duration-300" data-id="${item.id}" data-type="${item.media_type || (item.title ? 'movie' : 'tv')}">
+                        <div class="relative rounded-lg overflow-hidden shadow-lg">
+                            <img src="${posterPath}" alt="${title}" class="w-full h-auto" loading="lazy">
+                            <div class="poster-overlay absolute inset-0 bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 flex items-center justify-center text-center p-2">
+                                <h3 class="text-white font-bold">${title}</h3>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            /**
+             * Creates and appends a row of movies to the container.
+             * @param {object} category - The category object with id, title, and url.
+             */
+            async function createMovieRow(category) {
+                const data = await fetchData(category.url);
+                if (!data || !data.results) return;
+
+                const moviesHTML = data.results.map(createMovieCard).join('');
+
+                const rowHTML = `
+                    <div id="${category.id}">
+                        <h2 class="text-2xl font-bold mb-4">${category.title}</h2>
+                        <div class="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide">
+                            ${moviesHTML}
+                        </div>
+                    </div>
+                `;
+                movieRowsContainer.innerHTML += rowHTML;
+
+                 // After adding the row, add click listeners
+                document.querySelectorAll(`#${category.id} .movie-card`).forEach(card => {
+                    card.addEventListener('click', () => {
+                        const id = card.dataset.id;
+                        const type = card.dataset.type;
+                        showMovieDetails(id, type);
+                    });
+                });
+            }
+
+            /**
+             * Fetches and displays details for a specific movie or TV show in a modal.
+             * @param {string} id - The ID of the movie or TV show.
+             * @param {string} type - 'movie' or 'tv'.
+             */
+            async function showMovieDetails(id, type) {
+                const detailUrl = `${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=videos,credits`;
+                const details = await fetchData(detailUrl);
+
+                if (!details) return;
+
+                const backdropUrl = details.backdrop_path ? `${IMAGE_BASE_URL}w1280${details.backdrop_path}` : 'https://placehold.co/1280x720/1f2937/ffffff?text=No+Image';
+                const posterUrl = details.poster_path ? `${IMAGE_BASE_URL}w500${details.poster_path}` : 'https://placehold.co/500x750/1f2937/ffffff?text=No+Image';
+                const title = details.title || details.name;
+                const releaseDate = details.release_date || details.first_air_date;
+                const rating = details.vote_average.toFixed(1);
+                const genres = details.genres.map(g => g.name).join(', ');
+                const trailer = details.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+                
+                modalBody.innerHTML = `
+                    <div class="relative">
+                        <img src="${backdropUrl}" alt="${title}" class="w-full h-auto object-cover rounded-t-lg">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-800 to-transparent"></div>
+                    </div>
+                    <div class="p-8">
+                        <h2 class="text-4xl font-bold mb-2">${title} (${releaseDate ? new Date(releaseDate).getFullYear() : 'N/A'})</h2>
+                        <div class="flex items-center space-x-4 mb-4 text-gray-400">
+                            <span>⭐ ${rating}/10</span>
+                            <span>${genres}</span>
+                        </div>
+                        <p class="text-gray-300 leading-relaxed mb-6">${details.overview}</p>
+                        ${trailer ? `<a href="https://www.youtube.com/watch?v=${trailer.key}" target="_blank" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">Watch Trailer</a>` : ''}
+                    </div>
+                `;
+                
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                }, 10);
+            }
+
+            /**
+             * Hides the movie details modal.
+             */
+            function hideModal() {
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+
+            // --- INITIALIZATION ---
+            async function initialize() {
+                // Fetch trending movies for hero section first
+                const trendingData = await fetchData(endpoints[0].url);
+                if (trendingData && trendingData.results) {
+                    updateHeroSection(trendingData.results[0]);
+                }
+
+                // Create all movie rows
+                endpoints.forEach(createMovieRow);
+
+                // Add event listeners for modal
+                modalCloseBtn.addEventListener('click', hideModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideModal();
+                    }
+                });
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
